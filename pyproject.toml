@@ -1,0 +1,182 @@
+# pyproject.toml
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry]
+name = "autoerp"
+version = "0.1.0"
+description = "Système de planification des ressources d'entreprise (ERP) avec architecture hexagonale"
+authors = ["AutoERP Team <contact@autoerp.com>"]
+license = "MIT"
+readme = "README.md"
+homepage = "https://github.com/autoerp/autoerp"
+repository = "https://github.com/autoerp/autoerp"
+documentation = "https://autoerp.readthedocs.io"
+keywords = ["erp", "business", "management", "fastapi", "streamlit", "hexagonal-architecture"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Topic :: Office/Business",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+]
+packages = [{include = "autoerp"}]
+include = [
+    "autoerp/data/*.yaml",
+    "autoerp/data/*.html",
+    "autoerp/plugins/*.py",
+    "autoerp/templates/*.html",
+    "LICENSE",
+    "README.md",
+    "CHANGELOG.md",
+]
+
+[tool.poetry.dependencies]
+python = "^3.8"
+fastapi = "^0.104.1"
+uvicorn = {extras = ["standard"], version = "^0.24.0"}
+streamlit = "^1.28.1"
+sqlalchemy = "^2.0.23"
+alembic = "^1.12.1"
+pydantic = "^2.5.0"
+python-jose = {extras = ["cryptography"], version = "^3.3.0"}
+passlib = {extras = ["bcrypt"], version = "^1.7.4"}
+python-multipart = "^0.0.6"
+jinja2 = "^3.1.2"
+pandas = "^2.1.3"
+numpy = "^1.25.2"
+plotly = "^5.17.0"
+redis = "^5.0.1"
+celery = "^5.3.4"
+psycopg2-binary = "^2.9.9"
+click = "^8.1.7"
+pyyaml = "^6.0.1"
+python-dateutil = "^2.8.2"
+email-validator = "^2.1.0"
+httpx = "^0.25.2"
+aiofiles = "^23.2.1"
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^7.4.3"
+pytest-asyncio = "^0.21.1"
+pytest-cov = "^4.1.0"
+black = "^23.11.0"
+flake8 = "^6.1.0"
+mypy = "^1.7.1"
+isort = "^5.12.0"
+pre-commit = "^3.5.0"
+bandit = "^1.7.5"
+safety = "^2.3.5"
+sphinx = "^7.2.6"
+sphinx-rtd-theme = "^1.3.0"
+mkdocs = "^1.5.3"
+mkdocs-material = "^9.4.8"
+pytest-mock = "^3.12.0"
+factory-boy = "^3.3.0"
+faker = "^20.1.0"
+
+[tool.poetry.scripts]
+autoerp = "autoerp.cli:main"
+autoerp-server = "autoerp.api:run_server"
+autoerp-ui = "autoerp.ui:run_ui"
+autoerp-init = "autoerp.cli:init_project"
+autoerp-migrate = "autoerp.cli:migrate_db"
+
+[tool.black]
+line-length = 88
+target-version = ['py38']
+include = '\.pyi?$'
+extend-exclude = '''
+/(
+  # directories
+  \.eggs
+  | \.git
+  | \.hg
+  | \.mypy_cache
+  | \.tox
+  | \.venv
+  | build
+  | dist
+)/
+'''
+
+[tool.isort]
+profile = "black"
+multi_line_output = 3
+line_length = 88
+known_first_party = ["autoerp"]
+skip = ["migrations"]
+
+[tool.mypy]
+python_version = "3.8"
+check_untyped_defs = true
+disallow_any_generics = true
+disallow_incomplete_defs = true
+disallow_untyped_defs = true
+no_implicit_optional = true
+warn_redundant_casts = true
+warn_unused_ignores = true
+warn_return_any = true
+strict_equality = true
+show_error_codes = true
+
+[[tool.mypy.overrides]]
+module = [
+    "streamlit.*",
+    "plotly.*",
+    "redis.*",
+    "celery.*",
+]
+ignore_missing_imports = true
+
+[tool.pytest.ini_options]
+minversion = "6.0"
+addopts = [
+    "-ra",
+    "--strict-markers",
+    "--strict-config",
+    "--cov=autoerp",
+    "--cov-branch",
+    "--cov-report=term-missing",
+    "--cov-report=html:htmlcov",
+    "--cov-report=xml",
+]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+markers = [
+    "unit: Unit tests",
+    "integration: Integration tests",
+    "e2e: End-to-end tests",
+    "slow: Slow running tests",
+    "database: Tests requiring database",
+    "redis: Tests requiring Redis",
+]
+
+[tool.coverage.run]
+source = ["autoerp"]
+omit = [
+    "*/tests/*",
+    "*/migrations/*",
+    "*/venv/*",
+    "*/env/*",
+    "setup.py",
+]
+
+[tool.coverage.report]
+exclude_lines = [
+    "pragma: no cover",
+    "def __repr__",
+    "raise AssertionError",
+    "raise NotImplementedError",
+    "if __name__ == .__main__.:",
+    "if TYPE_CHECKING:",
+]
